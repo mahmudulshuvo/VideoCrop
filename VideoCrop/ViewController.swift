@@ -28,13 +28,13 @@ class ViewController: UIViewController {
         let clipVideoTrack = asset.tracks(withMediaType: AVMediaTypeVideo)[0]
         let videoComposition = AVMutableVideoComposition()
         videoComposition.frameDuration = CMTimeMake(1, 30)
-        videoComposition.renderSize = CGSize(width: 320, height: 240)
+        videoComposition.renderSize = CGSize(width: clipVideoTrack.naturalSize.width, height: clipVideoTrack.naturalSize.height)
         
         // video actual size
         print("actual video width \(clipVideoTrack.naturalSize.width) height \(clipVideoTrack.naturalSize.height)")
 
         let parentLayer = CALayer()
-        parentLayer.frame = CGRect(x :0, y :0, width :320, height :240)
+        parentLayer.frame = CGRect(x :150, y :150, width :320, height :240)
         let videoLayer = CALayer()
         let diameter = min(parentLayer.frame.size.width, parentLayer.frame.size.height) * 0.8;
         videoLayer.frame = CGRect(x :(parentLayer.frame.size.width - diameter) / 2,
