@@ -32,7 +32,11 @@ class ViewController: UIViewController {
         
         // video actual size
         print("actual video width \(clipVideoTrack.naturalSize.width) height \(clipVideoTrack.naturalSize.height)")
-
+        
+        
+        //////////////////// ...................... For Testing.......................... /////////////////////////////
+                                  // Just comment the below lines before END Marker //
+        
         let parentLayer = CALayer()
         parentLayer.frame = CGRect(x :150, y :150, width :320, height :240)
         let videoLayer = CALayer()
@@ -46,12 +50,16 @@ class ViewController: UIViewController {
         parentLayer.addSublayer(videoLayer) 
         self.view.layer.addSublayer(parentLayer)
         videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videoLayer, in: parentLayer)
+        
+                                      /////// ........... END Marker ............ ////////
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration)
         let videoLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: clipVideoTrack)
-        let videoTransform = getResizeAspectFillTransform(videoSize: clipVideoTrack.naturalSize, outputSize: self.view.frame.size)
+        let videoTransform = getResizeAspectFillTransform(videoSize: clipVideoTrack.naturalSize, outputSize: clipVideoTrack.naturalSize)
         videoLayerInstruction.setTransform(videoTransform, at: kCMTimeZero)
         instruction.layerInstructions = [videoLayerInstruction]
         videoComposition.instructions = [instruction]
