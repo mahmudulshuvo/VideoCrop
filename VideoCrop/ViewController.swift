@@ -60,7 +60,6 @@ class ViewController: UIViewController {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         let exportPath = documentsPath.appendingFormat("/CroppedVideo.mp4")
         let exportUrl = URL(fileURLWithPath: exportPath)
-        print("export url  = \(exportUrl)")
         
         
         do {
@@ -82,7 +81,7 @@ class ViewController: UIViewController {
     
     func exportDidFinish(_ session: AVAssetExportSession) {
         let outputURL = session.outputURL
-        print("outputurl  = \(outputURL)")
+        print("exported url  = \(outputURL)")
         
     }
     
