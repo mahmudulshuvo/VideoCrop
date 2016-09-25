@@ -66,7 +66,7 @@ class ViewController: UIViewController {
         catch _ {
         }
 
-        exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetLowQuality)
+        exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
         exporter.videoComposition = videoComposition
         exporter.outputURL = exportUrl
         exporter.outputFileType = AVFileTypeQuickTimeMovie
