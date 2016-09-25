@@ -36,7 +36,7 @@ class ViewController: UIViewController {
         let parentLayer = CALayer()
         parentLayer.frame = CGRect(x :150, y :150, width :320, height :240)
         let videoLayer = CALayer()
-        let diameter = min(parentLayer.frame.size.width, parentLayer.frame.size.height) * 0.8;
+        let diameter = min(parentLayer.frame.size.width, parentLayer.frame.size.height);
         videoLayer.frame = CGRect(x :(parentLayer.frame.size.width - diameter) / 2,
                                       y :(parentLayer.frame.size.height - diameter) / 2,
                                       width :diameter, height :diameter);
@@ -81,7 +81,7 @@ class ViewController: UIViewController {
     
     func exportDidFinish(_ session: AVAssetExportSession) {
         let outputURL = session.outputURL
-        print("exported url  = \(outputURL)")
+        print("exported url  = \(outputURL?.description)")
         
     }
     
