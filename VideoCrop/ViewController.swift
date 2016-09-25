@@ -29,6 +29,9 @@ class ViewController: UIViewController {
         let videoComposition = AVMutableVideoComposition()
         videoComposition.frameDuration = CMTimeMake(1, 30)
         videoComposition.renderSize = CGSize(width: 320, height: 240)
+        
+        // video actual size
+        print("actual video width \(clipVideoTrack.naturalSize.width) height \(clipVideoTrack.naturalSize.height)")
 
         let parentLayer = CALayer()
         parentLayer.frame = CGRect(x :0, y :0, width :320, height :240)
@@ -95,7 +98,6 @@ class ViewController: UIViewController {
         let translateY = (outputSize.height - newHeight) / 2 / scale
         let resizeTransform = CGAffineTransform(scaleX: scale, y: scale)
         let finalTransform = resizeTransform.translatedBy(x: translateX, y: translateY)
-
         return finalTransform
     }
     
