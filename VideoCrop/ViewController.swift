@@ -22,22 +22,35 @@ class ViewController: UIViewController {
     }
     
     
-    
     func cropVideo() {
 
         let asset = AVAsset.init(url: URL(fileURLWithPath: Bundle.main.path(forResource: "sample", ofType: "mov")!))
         let clipVideoTrack = asset.tracks(withMediaType: AVMediaTypeVideo)[0]
         let videoComposition = AVMutableVideoComposition()
         videoComposition.frameDuration = CMTimeMake(1, 30)
-        videoComposition.renderSize = CGSize(width: clipVideoTrack.naturalSize.height, height: clipVideoTrack.naturalSize.height)
+        videoComposition.renderSize = CGSize(width: 320, height: 240)
+
+        let parentLayer = CALayer()
+        parentLayer.frame = CGRect(x :0, y :0, width :320, height :240)
+        let videoLayer = CALayer()
+        let diameter = min(parentLayer.frame.size.width, parentLayer.frame.size.height) * 0.8;
+        videoLayer.frame = CGRect(x :(parentLayer.frame.size.width - diameter) / 2,
+                                      y :(parentLayer.frame.size.height - diameter) / 2,
+                                      width :diameter, height :diameter);
+        videoLayer.cornerRadius = diameter / 2;
+        videoLayer.masksToBounds = true;
+        videoLayer.contentsGravity = kCAGravityResizeAspectFill
+        parentLayer.addSublayer(videoLayer) 
+        self.view.layer.addSublayer(parentLayer)
+        videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videoLayer, in: parentLayer)
+
+        
         let instruction = AVMutableVideoCompositionInstruction()
-        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(120, 60))
-        let transformer = AVMutableVideoCompositionLayerInstruction.init(assetTrack: clipVideoTrack)
-        let t1 = CGAffineTransform(translationX: clipVideoTrack.naturalSize.height, y: 0)
-        let t2 = t1.rotated(by: CGFloat(M_PI_2))
-        let finalTransform = t2
-        transformer.setTransform(finalTransform, at: kCMTimeZero)
-        instruction.layerInstructions = [transformer]
+        instruction.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration)
+        let videoLayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: clipVideoTrack)
+        let videoTransform = getResizeAspectFillTransform(videoSize: clipVideoTrack.naturalSize, outputSize: self.view.frame.size)
+        videoLayerInstruction.setTransform(videoTransform, at: kCMTimeZero)
+        instruction.layerInstructions = [videoLayerInstruction]
         videoComposition.instructions = [instruction]
         
  
@@ -53,7 +66,7 @@ class ViewController: UIViewController {
         catch _ {
         }
 
-        exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
+        exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetLowQuality)
         exporter.videoComposition = videoComposition
         exporter.outputURL = exportUrl
         exporter.outputFileType = AVFileTypeQuickTimeMovie
@@ -68,6 +81,22 @@ class ViewController: UIViewController {
         let outputURL = session.outputURL
         print("outputurl  = \(outputURL)")
         
+    }
+    
+
+    private func getResizeAspectFillTransform(videoSize: CGSize, outputSize: CGSize) -> CGAffineTransform {
+
+        let widthRatio = outputSize.width / videoSize.width
+        let heightRatio = outputSize.height / videoSize.height
+        let scale = widthRatio >= heightRatio ? widthRatio : heightRatio
+        let newWidth = videoSize.width * scale
+        let newHeight = videoSize.height * scale
+        let translateX = (outputSize.width - newWidth) / 2 / scale
+        let translateY = (outputSize.height - newHeight) / 2 / scale
+        let resizeTransform = CGAffineTransform(scaleX: scale, y: scale)
+        let finalTransform = resizeTransform.translatedBy(x: translateX, y: translateY)
+
+        return finalTransform
     }
     
     
